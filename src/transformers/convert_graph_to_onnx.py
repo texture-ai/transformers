@@ -417,7 +417,7 @@ def optimize(onnx_model_path: Path) -> Path:
     opt_model_path = generate_identified_filename(onnx_model_path, "-optimized")
     sess_option = SessionOptions()
     sess_option.optimized_model_filepath = opt_model_path.as_posix()
-    _ = InferenceSession(onnx_model_path.as_posix(), sess_option, providers = ort.get_available_providers())
+    _ = InferenceSession(onnx_model_path.as_posix(), sess_option, providers = [prov for prov in ort.get_available_providers() if not prov == 'TensorrtExecutionProvider'])
 
     print(f"Optimized model has been written at {opt_model_path}: \N{heavy check mark}")
     print("/!\\ Optimized model contains hardware specific operators which might not be portable. /!\\")
