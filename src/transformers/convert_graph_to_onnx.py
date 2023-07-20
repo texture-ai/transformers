@@ -410,13 +410,14 @@ def optimize(onnx_model_path: Path) -> Path:
     Returns: Path where the optimized model binary description has been saved
 
     """
+    import onnxruntime as ort
     from onnxruntime import InferenceSession, SessionOptions
 
     # Generate model name with suffix "optimized"
     opt_model_path = generate_identified_filename(onnx_model_path, "-optimized")
     sess_option = SessionOptions()
     sess_option.optimized_model_filepath = opt_model_path.as_posix()
-    _ = InferenceSession(onnx_model_path.as_posix(), sess_option)
+    _ = InferenceSession(onnx_model_path.as_posix(), sess_option, providers = ort.get_available_providers())
 
     print(f"Optimized model has been written at {opt_model_path}: \N{heavy check mark}")
     print("/!\\ Optimized model contains hardware specific operators which might not be portable. /!\\")
